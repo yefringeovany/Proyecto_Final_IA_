@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mouse Virtual</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+</head>
+<body>
+    <h1>Mouse Virtual</h1>
+    <img id="video" width="640" height="480">
+    <script>
+        const socket = io();
+        const video = document.getElementById('video');
+
+        socket.on('frame', (data) => {
+            video.src = `data:image/jpeg;base64,${data}`;
+        });
+
+        socket.on('mouse_move', (data) => {
+            console.log('Mouse move:', data);
+            window.dispatchEvent(new MouseEvent('mousemove', {
+                clientX: data.x,
+                clientY: data.y
+            }));
+        });
+
+        socket.on('mouse_click', () => {
+            console.log('Mouse click');
+            window.dispatchEvent(new MouseEvent('click'));
+        });
+    </script>
+</body>
+</html>
